@@ -80,6 +80,12 @@ func SetUpGin() {
 		c.Next()
 	})
 
+	router.LoadHTMLGlob("templates/*")
+	router.GET("/image", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Main website",
+		})
+	})
 	router.POST("/upload", UploadImage)
 
 	router.Run(CFG.GetEnv("PORT"))
