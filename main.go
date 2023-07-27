@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/FabioSebs/infrastruc/config"
 	"github.com/aws/aws-sdk-go/aws"
@@ -50,12 +51,13 @@ func UploadImage(c *gin.Context) {
 	}
 
 	filename := header.Filename
-
+	ext := strings.Split(filename, ".")
 	up, err := uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(BUCKETNAME),
-		ACL:    aws.String("public-read"),
-		Key:    aws.String(filename),
-		Body:   file,
+		Bucket:   aws.String(BUCKETNAME),
+		ACL:      aws.String("public-read"),
+		Key:      aws.String(filename),
+		Body:     file,
+		Metadata: aws.StringMap(map[string]string{"Content-Type": "image/" + ext[1]}),
 	})
 
 	if err != nil {
